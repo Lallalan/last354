@@ -14,6 +14,7 @@ body{
 }
 /* Style for the yellow UI box */
 .UIBoxYellow {
+  box-shadow: -8px 8px 8px #8360604d;
   margin-left:45px;
   border-radius: 25px;
   background-color:#FDDD5C;
@@ -25,13 +26,14 @@ body{
 }
 
 .UIBoxBlue {
+  box-shadow: -8px 8px 8px #8360604d;
   border-radius: 25px;
   background-color:#85e7e6;
   position:relative;
   z-index: 2;
   top:1px;
   bottom: 20px;
-  padding: 20px;
+  padding: 18px;
   margin: 10px;
   left: 30px;
   width: 500px;
@@ -92,7 +94,7 @@ body{
   background-color: #da4444;
   box-shadow: -8px 8px 8px #8360604d;
   display: flex;
-  border:none;
+  border: none;
   justify-content: space-between;
   align-items: space-between;
   flex-direction: column;
@@ -403,4 +405,5 @@ body{
 canvas {
   border: 22px #B5651D;
   border-style: groove;
+  margin-top: -50px;
 }

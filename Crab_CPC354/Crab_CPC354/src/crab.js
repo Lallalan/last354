@@ -168,6 +168,8 @@ var pointsArray = [];
 
 var currentProgram;
 
+var isSmoothShading = true;
+
 function updateLightSource() {
   if (isDirectional) {
     // Set up directional light properties
@@ -236,22 +238,6 @@ window.onload = function init() {
   
   cube();
   sliders();
-
-  // var vBuffer = gl.createBuffer();
-  // gl.bindBuffer( gl.ARRAY_BUFFER, vBuffer );
-  // gl.bufferData(gl.ARRAY_BUFFER, flatten(vertices), gl.STATIC_DRAW);
-
-  // var vPosition = gl.getAttribLocation( program, "vPosition" );
-  // gl.vertexAttribPointer( vPosition, 4, gl.FLOAT, false, 0, 0 );
-  // gl.enableVertexAttribArray( vPosition );
-
-  // var cBuffer = gl.createBuffer();
-  // gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
-  // gl.bufferData(gl.ARRAY_BUFFER, flatten(colorsArray), gl.STATIC_DRAW);
-
-  // var vColor = gl.getAttribLocation( program, "vColor" );
-  // gl.vertexAttribPointer( vColor, 3, gl.FLOAT, false, 0, 0 );
-  // gl.enableVertexAttribArray( vColor );
 
   for (i = 0; i < numNodes; i++) 
     updateNodes(i);
@@ -1202,17 +1188,10 @@ function attachEventListeners() {
     updateCamera();
   });
 
-  document.getElementById("flatShaderBtn").onclick = function() {
-    switchShader("vertex-shader-flat", "fragment-shader-flat");
-  };
-
-  document.getElementById("phongShaderBtn").onclick = function() {
-    switchShader("vertex-shader-smooth", "fragment-shader-smooth");
-  };
-
-  document.getElementById("defaultShaderBtn").onclick = function() {
-    switchShader("vertex-shader", "fragment-shader");
-  };
+  document.getElementById("toggleShadingBtn").addEventListener("click", function() {
+    isSmoothShading = !isSmoothShading; 
+    toggleShading();
+  });
 }
 
 function updateCamera() {
@@ -1221,32 +1200,29 @@ function updateCamera() {
   render();
 }
 
-// function switchShader(vertexShaderId, fragmentShaderId) {
-//   var newProgram = initShaders(gl, vertexShaderId, fragmentShaderId);
-//   gl.useProgram(newProgram);
-//   currentProgram = newProgram;
+/***************************************************
+  Changing the type of shading, flat or smooth (toggle)
+****************************************************/
+function toggleShading() {
+  if (isSmoothShading) {
+      materialAmbient = vec4(1.0, 0.0, 1.0, 1.0);
+      materialDiffuse = vec4(1.0, 0.8, 0.0, 1.0);
+      materialSpecular = vec4(1.0, 0.8, 0.0, 1.0);
+      materialShininess = 100.0;
+  } else {
+      materialAmbient = vec4(0.5, 0.0, 1.0, 1.0);
+      materialDiffuse = vec4(0.0, 0.0, 0.0, 0.0);
+      materialSpecular = vec4(0.0, 0.0, 0.0, 0.0);
+      materialShininess = 100.0;
+  }
 
-//   var vBuffer = gl.createBuffer();
-//   gl.bindBuffer( gl.ARRAY_BUFFER, vBuffer );
-//   gl.bufferData(gl.ARRAY_BUFFER, flatten(vertices), gl.STATIC_DRAW);
+  ambientProduct = mult(lightAmbient, materialAmbient);
+  diffuseProduct = mult(lightDiffuse, materialDiffuse);
+  specularProduct = mult(lightSpecular, materialSpecular);
 
-//   var vPosition = gl.getAttribLocation( program, "vPosition" );
-//   gl.vertexAttribPointer( vPosition, 4, gl.FLOAT, false, 0, 0 );
-//   gl.enableVertexAttribArray( vPosition );
-
-//   var cBuffer = gl.createBuffer();
-//   gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
-//   gl.bufferData(gl.ARRAY_BUFFER, flatten(colorsArray), gl.STATIC_DRAW);
-
-//   var vColor = gl.getAttribLocation( program, "vColor" );
-//   gl.vertexAttribPointer( vColor, 3, gl.FLOAT, false, 0, 0 );
-//   gl.enableVertexAttribArray( vColor );
-
-//   for (i = 0; i < numNodes; i++) 
-//     updateNodes(i);
-
-//   updateLightSource();
-//   // drawGround();
-//   attachEventListeners();
-//   render();
-// }
+  gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"), flatten(mult(lightAmbient, materialAmbient)));
+  gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"), flatten(mult(lightDiffuse, materialDiffuse)));
+  gl.uniform4fv(gl.getUniformLocation(program, "specularProduct"), flatten(mult(lightSpecular, materialSpecular)));
+  gl.uniform1f(shininessLoc, materialShininess);
+  render();
+}
