@@ -168,6 +168,7 @@ var pointsArray = [];
 
 var currentProgram;
 
+// Keep track of flat/smooth shading
 var isSmoothShading = true;
 
 function updateLightSource() {
@@ -1194,6 +1195,7 @@ function attachEventListeners() {
   });
 }
 
+// Updates the camera's position and orientation based on the eye vector's current values.
 function updateCamera() {
   modelViewMatrix = lookAt(eye, at, up);
   gl.uniformMatrix4fv(gl.getUniformLocation(program, "modelViewMatrix"), false, flatten(modelViewMatrix));
@@ -1203,6 +1205,7 @@ function updateCamera() {
 /***************************************************
   Changing the type of shading, flat or smooth (toggle)
 ****************************************************/
+//  Toggles shading mode between smooth and flat and Adjusts material properties based on the shading mode.
 function toggleShading() {
   if (isSmoothShading) {
       materialAmbient = vec4(1.0, 0.0, 1.0, 1.0);
