@@ -1210,19 +1210,20 @@ function toggleShading() {
       materialSpecular = vec4(1.0, 0.8, 0.0, 1.0);
       materialShininess = 100.0;
   } else {
-      materialAmbient = vec4(0.5, 0.0, 1.0, 1.0);
+      materialAmbient = vec4(0.5, 0.5, 1.0, 1.0); 
       materialDiffuse = vec4(0.0, 0.0, 0.0, 0.0);
       materialSpecular = vec4(0.0, 0.0, 0.0, 0.0);
-      materialShininess = 100.0;
+      materialShininess = 1.0;
   }
 
   ambientProduct = mult(lightAmbient, materialAmbient);
   diffuseProduct = mult(lightDiffuse, materialDiffuse);
   specularProduct = mult(lightSpecular, materialSpecular);
 
-  gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"), flatten(mult(lightAmbient, materialAmbient)));
-  gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"), flatten(mult(lightDiffuse, materialDiffuse)));
-  gl.uniform4fv(gl.getUniformLocation(program, "specularProduct"), flatten(mult(lightSpecular, materialSpecular)));
-  gl.uniform1f(shininessLoc, materialShininess);
+  gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"), flatten(ambientProduct));
+  gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"), flatten(diffuseProduct));
+  gl.uniform4fv(gl.getUniformLocation(program, "specularProduct"), flatten(specularProduct));
+  gl.uniform1f(gl.getUniformLocation(program, "shininess"), materialShininess);
+
   render();
 }
